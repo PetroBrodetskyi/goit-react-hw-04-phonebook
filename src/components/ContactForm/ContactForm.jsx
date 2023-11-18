@@ -1,55 +1,53 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import css from "./ContactForm.module.css";
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid';
 
-class ContactForm extends Component {
-  state = {
+const ContactForm = ({ onSubmit }) => {
+  const [formData, setFormData] = useState({
     name: '',
     number: '',
-  };
+  });
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, number } = this.state;
-    const { onSubmit } = this.props;
+    const { name, number } = formData;
 
     if (name && number) {
       onSubmit({ id: nanoid(), name, number });
-      this.setState({ name: '', number: '' });
+      setFormData({ name: '', number: '' });
     }
   };
 
-  render() {
-    const { name, number } = this.state;
-    return (
-      <form className={css.contactsflex} onSubmit={this.handleSubmit}>
-        <input
-          className={css.contactinput}
-          type="text"
-          name="name"
-          value={name}
-          onChange={this.handleChange}
-          placeholder="Ім'я"
-          required
-        />
-        <input
-          className={css.contactinput}
-          type="tel"
-          name="number"
-          value={number}
-          onChange={this.handleChange}
-          placeholder="Номер телефону"
-          required
-        />
-        <button className={css.contactbutton} type="submit">Додати контакт</button>
-      </form>
-    );
-  }
+  const { name, number } = formData;
+
+  return (
+    <form className={css.contactsflex} onSubmit={handleSubmit}>
+      <input
+        className={css.contactinput}
+        type="text"
+        name="name"
+        value={name}
+        onChange={handleChange}
+        placeholder="Ім'я"
+        required
+      />
+      <input
+        className={css.contactinput}
+        type="tel"
+        name="number"
+        value={number}
+        onChange={handleChange}
+        placeholder="Номер телефону"
+        required
+      />
+      <button className={css.contactbutton} type="submit">Додати контакт</button>
+    </form>
+  );
 }
 
 export default ContactForm;
